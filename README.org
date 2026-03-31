@@ -1,0 +1,22 @@
+
+# SPDX-FileCopyrightText: 2026 Arthur A. Gleckler
+# SPDX-License-Identifier: MIT
+* SRFI 268: Multidimensional Array Literals
+
+** by Per Bothner (SRFI 163), Peter McGoron (design), and John Cowan (editor and steward)
+
+
+
+keywords: [[https://srfi.schemers.org/?keywords=reader-syntax][Reader Syntax]]
+
+This repository hosts [[https://srfi.schemers.org/srfi-268/][SRFI 268]]: Multidimensional Array Literals, a [[https://srfi.schemers.org/][Scheme Request for Implementation]].
+
+This SRFI is in /draft/ status.
+See also [[/srfi-25/][SRFI 25: Multi-dimensional Array Primitives]], [[/srfi-122/][SRFI 122: Nonempty Intervals and Generalized Arrays]], and [[/srfi-213/][SRFI 213: Identifier Properties]].
+The full documentation for this SRFI can be found in the [[https://srfi.schemers.org/srfi-268/srfi-268.html][SRFI Document]].
+
+If you'd like to participate in the discussion of this SRFI, or report issues with it, please [[https://srfi.schemers.org/srfi-268/][join the SRFI-268 mailing list]] and send your message there.
+
+Thank you.
+
+[[mailto:srfi-editors@srfi.schemers.org][The SRFI Editors]]
