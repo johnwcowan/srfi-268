@@ -1,11 +1,15 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="en">
+<!--
+SPDX-FileCopyrightText: 2026 John Cowan, Per Bothner
+SPDX-License-Identifier: MIT
+-->
   <head>
+    <meta charset="utf-8">
     <title>SRFI 268: Multidimensional array literals</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="/srfi.css" type="text/css"/>
-    <link href="/favicon.png" rel="icon" sizes="192x192" type="image/png"/>
-    <meta http-equiv="Content-Type" content="text/html"/>
+    <link href="/favicon.png" rel="icon" sizes="192x192" type="image/png">
+    <link rel="stylesheet" href="https://srfi.schemers.org/srfi.css" type="text/css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style type="text/css">
   div.title h1, div.author h1 { font-size: small; color: blue }
   div.title { font-size: xx-large; color: blue; font-weight: bold }
@@ -19,17 +23,20 @@
   span.proc-def { font-weight: bold }
   code.function { font-weight: bold }
   p.synopsis { background-color: #D8ffD8 }
-</style>
-  </head>
+</style></head>
   <body>
-    <div class="title"><h1>Title</h1>Multidimensional Array Literals
-</div>
-    <div class="author"><h1>Authors</h1>
-Per Bothner (SRFI 163), Peter McGoron (design), John Cowan (editor and steward)
-</div>
-    <h1>Status</h1>
-    <p>(to be provided).</p>
-    <h1>Abstract</h1>
+    <h1><a href="https://srfi.schemers.org/"><img class="srfi-logo" src="https://srfi.schemers.org/srfi-logo.svg" alt="SRFI surfboard logo" /></a>268: Multidimensional Array Literals</h1>
+
+<p>by Per Bothner (SRFI 163), Peter McGoron (design), John Cowan (editor and steward)</p>
+
+<h2 id="status">Status</h2>
+
+<p>??? the draft/final/withdrawn status of the SRFI, information on how
+to subscribe to its mailing list, and important dates in its history.
+The editor will add this section.</p>
+
+<h2 id="abstract">Abstract</h2>
+
     <p>This is a specification of a lexical syntax
 for multi-dimensional arrays. It is a modest alteration of
 <a href="https://srfi.schemers.org/srfi-163/srfi-163.html">SRFI 163</a>, which
@@ -41,11 +48,13 @@ to handle non-zero lower bounds and optional uniform element types
 and <a href="https://srfi.schemers.org/srfi-160">SRFI 160</a>).
 It can be used in conjunction with
 <a href="https://srfi.schemers.org/srfi-25">SRFI 25</a>,
-<a href="https://srfi.schemers.org/srfi-122">SRFI 122</a>, 
+<a href="https://srfi.schemers.org/srfi-122">SRFI 122</a>,
 or <a href="https://srfi.schemers.org/srfi-213">SRFI 213</a>.
 There are recommendations for output formatting
 and a suggested <code>format-array</code> procedure.</p>
-    <h1>Rationale</h1>
+
+<h2 id="rationale">Rationale</h2>
+
     <p>
 It is desirable to have a lexical syntax
 for reading and writing multi-dimensional arrays,
@@ -64,9 +73,9 @@ and its type-specifier syntax is stylistically
 incompatible with the literals proposed
 for uniform vectors in SRFIs 4 and 160.
 
-<h1>Specification</h1>
+<h2 id="specification">Specification</h2>
 
-<h2>Reader syntax</h2>
+<h3 id="reader-syntax">Reader syntax</h3>
 
 <p>An array literal consists of the following parts:
 an <code class="literal">#</code>
@@ -93,7 +102,7 @@ a one-dimensional array uses a single list,
 a two-dimensional array uses a list of lists, and so on.
 The elements are in lexicographic order. A zero-dimensional
 array is followed by a datum of any type.
-The <var class="non-terminal">lbounds</var> 
+The <var class="non-terminal">lbounds</var>
 and the number of dimensions are mutually exclusive.
 </p>
 
@@ -104,7 +113,7 @@ it would be impossible to tell
 whether <code>#a (1 2)</code>
 represents a one-dimensional array with integer elements,
 or a zero-dimensional array whose sole element is a list.
-The <var class="non-terminal">lbounds</var> 
+The <var class="non-terminal">lbounds</var>
 and the number of dimensions are mutually exclusive.</p>
 
 <p>Whitespace is permitted before either the lower bounds or
@@ -168,7 +177,7 @@ convert it to a string, with a newline between each line.
 Then recursively <code>read</code> each element.
 </p>
 
-<h2>Output</h2>
+<h3 id="output">Output</h3>
 
 <p>When an array is printed with the <code>write</code> function,
 the result <em>should</em> be an <em class="replaceable">array-literal</em>.
@@ -182,7 +191,7 @@ Printing with <code>display</code> <em>may</em> format the array in the same way
 using the <code>format-array</code> procedure.
 </p>
 
-<h2>The format-array utility procedure (non-normative)</h2>
+<h3 id="format-array">The format-array utility procedure (non-normative)</h3>
 
 <p class="synopsis"><code>(<span class="proc-def">format-array</span></code><var>value</var> [<var>port</var>]<code>)</code></p>
 <div class="blockquote"><blockquote class="blockquote">Produce a nice <q>pretty</q> display for <em class="replaceable"><code>value</code></em>, which is usually an array.
@@ -212,7 +221,7 @@ possibly in abbreviated form.
 <pre class="screen"><strong class="userinput"><code>
 (define arr
   #a(1 1)
-    ((#a(2 2) 
+    ((#a(2 2)
        ((1 2) (3 4))
         9
         #a(2 2)
@@ -220,7 +229,7 @@ possibly in abbreviated form.
           (#1a (42 43)
            #1a (8 7 6)
            #2a ((90 91) (100 101)))))
-            
+
 (format-array arr)</code></strong> ⇨
 #a(1 1)═══════════════════╗
 ║#2a═╗  │      9│#2a═╗    ║
@@ -237,7 +246,7 @@ possibly in abbreviated form.
 ╚═══════╧═══════╧═════════╝
 </pre>
 
-<p>If the number of dimensions is more than 2, then each “layer”
+<p>If the number of dimensions is more than 2, then each "layer"
 is printed separated by double lines.
 </p>
 
@@ -246,7 +255,7 @@ is printed separated by double lines.
   (((1 2 3 4) (5 6 7 8))
    ((9 10 11 12) (13 14 15 16))
    ((17 18 19 20) (21 22 23 24)))</code></strong>
-   
+
 f32(2 3 4)══╗
 ║ 1│ 2│ 3│ 4║
 ╟──┼──┼──┼──╢
@@ -288,47 +297,41 @@ A possible  implementation is illustrated here:
 ╚═════════════╧════════════════╧═══════════════╝
 </pre>
 
-<h1>Implementation</h1>
+<h2 id="implementation">Implementation</h2>
 
 <p>(none yet)</p>
 
-<h1>Acknowledgements</h1>
+<h2 id="acknowledgements">Acknowledgements</h2>
 
 This specification is based on prior art, primarily SRFI 163,
 Kawa, Guile, and Common Lisp.
 
-<h1>Copyright</h1>
-<p>
-Copyright ©  Per Bothner 2019, John Cowan 2026</p>
+<h2 id="copyright">Copyright</h2>
+<p>&copy; Per Bothner 2019, John Cowan 2026.</p>
 
 <p>
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:</p>
+  Permission is hereby granted, free of charge, to any person
+  obtaining a copy of this software and associated documentation files
+  (the "Software"), to deal in the Software without restriction,
+  including without limitation the rights to use, copy, modify, merge,
+  publish, distribute, sublicense, and/or sell copies of the Software,
+  and to permit persons to whom the Software is furnished to do so,
+  subject to the following conditions:</p>
 
 <p>
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.</p>
+  The above copyright notice and this permission notice (including the
+  next paragraph) shall be included in all copies or substantial
+  portions of the Software.</p>
 
 <p>
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+  MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+  NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+  BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+  ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.</p>
 
-<hr/>
-
-<address>Editor:
-<a href="mailto:srfi-editors+at+srfi+dot+schemers+dot+org">Arthur A. Gleckler</a>
-</address>
-</div>
-</p>
-</body>
-</html>
+  <hr>
+  <address>Editor: <a href="mailto:srfi-editors+at+srfi+dot+schemers+dot+org">Arthur A. Gleckler</a></address></body></html>
