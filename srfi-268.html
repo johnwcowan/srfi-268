@@ -1,15 +1,15 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <!--
 SPDX-FileCopyrightText: 2026 John Cowan, Per Bothner
 SPDX-License-Identifier: MIT
 -->
   <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8"/>
     <title>SRFI 268: Multidimensional array literals</title>
-    <link href="/favicon.png" rel="icon" sizes="192x192" type="image/png">
-    <link rel="stylesheet" href="https://srfi.schemers.org/srfi.css" type="text/css">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/favicon.png" rel="icon" sizes="192x192" type="image/png"/>
+    <link rel="stylesheet" href="https://srfi.schemers.org/srfi.css" type="text/css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <style type="text/css">
   div.title h1, div.author h1 { font-size: small; color: blue }
   div.title { font-size: xx-large; color: blue; font-weight: bold }
@@ -70,12 +70,15 @@ procedures, and a suggested
 
 <p>It is desirable to have a lexical syntax
 for reading and writing multi-dimensional arrays,
-so they can not only appear as literal values in code,
+so they can not only appear as literal values in code
+(where they are especially useful
+for testing and noodling at the REPL)
 but also be read from and written to data files.
 Basing it on the Common Lisp syntax
 makes sense, and is what has been done
-by all known existing implementations.
-However, Common Lisp arrays do not support non-zero lower bounds,
+by all known existing implementations.</p>
+
+<p>However, Common Lisp arrays do not support non-zero lower bounds,
 and Common Lisp's handling of specialized (uniform) arrays
 is very different from that of known Scheme implementations.
 Various Scheme extensions have been proposed.
@@ -85,6 +88,13 @@ and its type-specifier syntax is stylistically
 incompatible with the literals proposed
 for uniform vectors in SRFIs 4 and 160.</p>
 
+<p>Unlike this SRFI, <a href="https://srfi.schemers.org/srfi-163/srfi-163.html">SRFI 163</a> 
+is based on lower bound and length rather than lower buond and
+(exclusive) upper bound, like the rest of Scheme.  it also requires
+the tag and bounds to be a single token,
+which is problematic for high-dimensional arrays,
+and uses a special notation for the bounds rather than a list.</p>
+
 <h2 id="specification">Specification</h2>
 
 <h3 id="reader-syntax">Reader syntax</h3>
@@ -92,18 +102,32 @@ for uniform vectors in SRFIs 4 and 160.</p>
 <p>An array literal consists of the following parts:
 an <code class="literal">#a</code>
 or <code class="literal">#A</code>
-immediately followed by a <var class="non-terminal">tag</var>
+immediately followed by an optional <var class="non-terminal">tag</var>
 that specifies the type of the elements of the array.
 An implementation that supports the literal syntax of
 <a href="https://srfi.schemers.org/srfi-4/srfi-4.html">SRFI 4</a>
 or <a href="https://srfi.schemers.org/srfi-160/srfi-160.html">SRFI 160</a>
 should allow the <var>TAG</var> or <var>@</var>
 from those specifications as a <var class="non-terminal">tag</var>
-case-insensitively.
-This SRFI also allows the tags <var>f16</var> and <var>char</var>
-for 16-bit float arrays and character arrays.
-If the tag is omitted,
-the array may contain elements of any type.</p>
+case-insensitively. These tags are:
+<code>u8</code>,
+<code>u16</code>,
+<code>u32</code>,
+<code>s8</code>,
+<code>s16</code>,
+<code>s32</code>,
+<code>s64</code>,
+<code>f32</code>,
+<code>f64</code>,
+and (in SRFI 160 only)
+<code>c64</code> and
+<code>c128</code>.
+The tags <code>f16</code> and <code>char</code>
+for 16-bit float arrays and character arrays
+may also be understood. If the tag is omitted,
+the array may contain elements of any type.
+An unknown tag has implementation-specified behavior.
+</p>
 
 <p>After the <var class="non-terminal">tag</var>
 comes the <var class="non-terminal">bounds</var>,
@@ -122,15 +146,16 @@ array is followed by a datum of any type that the
 <var>tag</var> supports.</p>
 
 <p>The number of dimensions is inferred
-from the length of <var class="non-terminal">bounds</var>
+from the length of <var class="non-terminal">bounds</var>, as    
 it would be impossible from the
-<var class="non-terminal">datum</var> alone to tell
+<var class="non-terminal">datum</var> alone to tell if
 <code>(1 2)</code>
 represents a one-dimensional array with integer elements,
 or a zero-dimensional array whose sole element is a list.</p>
 
 <p>Whitespace is permitted before either the lower bounds or
-the list of array elements or both.
+the list of array elements or both,
+but not between "#a" and the tag.
 A single space before the <var class="replaceable">datum</var>
 is recommended style, even if the <var class="replaceable">datum</var> starts
 with a <var class="non-terminal">delimiter</var>.
@@ -143,12 +168,16 @@ case and whitespace):</p>
 
 <pre>
 array-literal ::= "#a" tag bounds datum
+tag ::= letter (letter | digit)*
 bounds = "(" bound* ")"
-bound := integer | "(" integer* ")
-integer := digit+
+bound := (number | "(" number number ")")
 </pre>
 
-<p>Here are some examples. A 2x2 array of 32-bit unsigned integers:
+<p>Note that the numbers must represent exact integers.</p>
+
+<h3 id="examples">Examples</h3>
+
+<p>A 2x2 array of 32-bit unsigned integers:
 </p>
 
 <pre><code>#au32(2 2) ((10 11) (20 21))</code></pre>
@@ -177,6 +206,37 @@ integer := digit+
 #2a((2 1) (2 3) (() ())
 </pre>
 
+<p>Here is a (hopefully correct) array of the 4D Levi-Civita symbol,
+which is defined where ε_ABCD = 1 if (A,B,C,D) is an
+even permutation of (1,2,3,4), -1 if it is odd, and zero if it is
+neither:</p>
+
+<pre class="keep-together">(define ε
+   #ai32 ((1 5) (1 5) (1 5) (1 5))
+     ;; ε_1ABC
+    ((((0 0 0 0) (0 0 0 0) (0 0 0 0) (0 0 0 0))  ; ε_11BC
+      ((0 0 0 0) (0 0 0 0) (0 0 0 1) (0 0 -1 0)) ; ε_12BC
+      ((0 0 0 0) (0 0 0 -1) (0 0 0 0) (0 1 0 0)) ; ε_13BC
+      ((0 0 0 0) (0 0 1 0) (0 -1 0 0) (0 0 0 0))) ; ε_14BC
+     ;; ε_2ABC
+     (((0 0 0 0) (0 0 0 0) (0 0 0 -1) (0 0 1 0)) ; ε_21BC
+      ((0 0 0 0) (0 0 0 0) (0 0 0 0) (0 0 0 0))  ; ε_22BC
+      ((0 0 0 1) (0 0 0 0) (0 0 0 0) (-1 0 0 0)) ; ε_23BC
+      ((0 0 1 0) (0 0 0 0) (-1 0 0 0) (0 0 0 0))) ; ε_24BC
+     ;; ε_3ABC
+     (((0 0 0 0) (0 0 0 -1) (0 0 0 0) (0 1 0 0)) ; ε_31BC
+      ((0 0 0 -1) (0 0 0 0) (0 0 0 0) (1 0 0 0)) ; ε_32BC
+      ((0 0 0 0) (0 0 0 0) (0 0 0 0) (0 0 0 0)) ; ε_33BC
+      ((0 1 0 0) (-1 0 0 0) (0 0 0 0) (0 0 0 0))) ; ε_34BC
+     ;; ε_4ABC
+     (((0 0 0 0) (0 0 -1 0) (0 1 0 0) (0 0 0 0)) ; ε_41BC
+      ((0 0 -1 0) (0 0 0 0) (1 0 0 0) (0 0 0 0)) ; ε_42BC
+      ((0 1 0 0) (-1 0 0 0) (0 0 0 0) (0 0 0 0)) ; ε_43BC
+      ((0 0 0 0) (0 0 0 0) (0 0 0 0) (0 0 0 0)))) ; ε44BC
+</pre>
+
+<h3 id="procedures">Procedures</h3>
+
 <h4><code>read-array </code> [ <var>input-port</var> ]</h4>
 
 <blockquote>Reads an array literal from <var>input-port</var>
@@ -194,8 +254,6 @@ If a cell has multiple lines,
 convert it to a string, with a newline between each line.
 Then recursively <code>read</code> each element.
 </p>
-
-<h3 id="output">Output</h3>
 
 <h4><code>write-array </code> <var>array</var> [ <var>output-port</var> ]</h4>
 
@@ -258,7 +316,7 @@ could be formatted as:</p>
 ╚══╧══╧══╝
 </pre>
 
-<p>and the literal</p>
+<p>and this literal for a three-dimensional array:</p>
 <pre>#af32(2 3 4)
   (((1 2 3 4) (5 6 7 8))
    ((9 10 11 12) (13 14 15 16))
@@ -293,7 +351,7 @@ This specification is based on prior art, primarily SRFI 163,
 Kawa, Guile, and Common Lisp.
 
 <h2 id="copyright">Copyright</h2>
-<p>&copy; Per Bothner 2019, John Cowan 2026.</p>
+<p>© Per Bothner 2019, John Cowan 2026.</p>
 
 <p>
   Permission is hereby granted, free of charge, to any person
@@ -319,5 +377,5 @@ Kawa, Guile, and Common Lisp.
   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.</p>
 
-  <hr>
+  <hr/>
   <address>Editor: <a href="mailto:srfi-editors+at+srfi+dot+schemers+dot+org">Arthur A. Gleckler</a></address></body></html>
