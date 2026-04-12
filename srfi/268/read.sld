@@ -6,18 +6,41 @@
           (srfi 231)
           )
   (begin
+    (define storage-class-symbols
+      `((char . ,char-storage-class)
+        (s8   . ,s8-storage-class)
+	(s16  . ,s16-storage-class)
+	(s32  . ,s32-storage-class)
+	(s64  . ,s64-storage-class)
+	(u1   . ,u1-storage-class)
+	(u8   . ,u8-storage-class)
+	(u16  . ,u16-storage-class)
+	(u32  . ,u32-storage-class)
+	(u64  . ,u64-storage-class)
+	(f8   . ,f8-storage-class)
+	(f16  . ,f16-storage-class)
+	(f32  . ,f32-storage-class)
+	(f64  . ,f64-storage-class)
+	(c64  . ,c64-storage-class)
+	(c128 . ,c128-storage-class)))
+
     (define (check-arg who pred x)
       (unless (pred x)
 	(error (string-append who ": invalid argument")
 	       x)))
 
-    (define (consume-tag-prefix port)
-      (let ((c (read-char port)))
-        (unless (eqv? c #\#)
-          (parsing-error "invalid tag character (expected #)" c)))
-      (let ((c (read-char port)))
-	(unless (memv c '(#\a #\A))
-	  (parsing-error "invalid tag character (expected a or A)" c))))
+    ;; Read the next char & raise an error if it's not in
+    ;; valid-chars.
+    (define (consume valid-chars)
+      (let ((x (read-char)))
+	(cond ((eof-object? x)
+	       (parsing-error "unexpected EOF"))
+	      ((not (memv x valid-chars))
+	       (parsing-error "invalid character" x)))))
+
+    (define (consume-tag-prefix)
+      (consume '(#\#))
+      (consume '(#\a #\A)))
 
     (define (parsing-error msg . irritants)
       (apply error
@@ -38,20 +61,22 @@
 
     ;; Parse an array tag from *port* and return an appropriate
     ;; storage class.
-    (define (parse-tag port)
-      (consume-tag-prefix port)
+    (define (class-symbol->storage-class sym)
+      (cond ((assv sym storage-class-symbols) => cdr)
+	    (else generic-storage-class)))
+
+    (define (parse-tag)
+      (consume-tag-prefix)
       (let ((class-sym (read)))
         (unless (symbol? class-sym)
 	  (parsing-error "invalid array tag" class-sym))
         (class-symbol->storage-class class-sym)))
 
-    ;; TODO
-    (define (parse-bounds port)
-      #f)
-
-    ;; TODO
-    (define (class-symbol->storage-class sym)
-      #f)
+    (define (parse-bounds)
+      (let ((bounds (read)))
+	(unless (list? bounds)
+	  (parsing-error "invalid bounds spec" bounds))
+	(map list->vector bounds)))
 
     ;; It would be easier to use list*->array to build the new
     ;; array here, but we need finer-grained control over the
@@ -64,7 +89,10 @@
 
     (define read-array
       (case-lambda
-        (() (read-array-from-port (current-input-port)))
-	((port) (read-array-from-port port))))
+	((port)
+         (check-arg "read-array" input-port? port)
+         (parameterize ((current-input-port port))
+           (read-array)))
+        (() (read-array-from-port (current-input-port)))))
 
   ))
