@@ -3,7 +3,7 @@
   (import (scheme base)
           (srfi 64)
           (srfi 231)
-          (srfi 268)
+          (srfi 268 write)
           )
   (begin
     (define (write-array-to-string array)
