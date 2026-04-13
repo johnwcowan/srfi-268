@@ -27,7 +27,27 @@
 
     (define (run-tests)
       (test-group "write-array"
-	(test-assert "1d generic array (1)"
+	(test-assert "1d generic array"
 	  (array-wr-equals? (list*->array 1 '(1 2 3))))
+	(test-assert "1d u8 array"
+	  (array-wr-equals? (list*->array 1
+					  '(1 2 3)
+					  u8-storage-class)))
+	(test-assert "2d generic array"
+	  (array-wr-equals? (list*->array 2
+					  '((1 2) (a b)))))
+	(test-assert "2d s16 array"
+	  (array-wr-equals? (list*->array 2
+					  '((-1 2) (-4 5))
+					  s16-storage-class)))
+	(test-assert "2d f64 array"
+	  (array-wr-equals?
+	   (list->array (make-interval '#(2 3))
+			'(23.0 10.0 11.0 13.0 14.0 4.0)
+			f64-storage-class)))
+	(test-assert "2d generic array, nonzero lower bounds"
+	  (array-wr-equals?
+	   (list->array (make-interval '#(1 3) '#(4 6))
+			'(a b c d e f g h i))))
       ))
   ))
