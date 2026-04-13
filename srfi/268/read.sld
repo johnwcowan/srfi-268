@@ -56,7 +56,7 @@
     ;; storage class.
     (define (class-symbol->storage-class sym)
       (cond ((assv sym storage-class-symbols) => cdr)
-	    (else srfi-231:generic-storage-class)))
+	    (else (parsing-error "invalid array type" sym))))
 
     (define (parse-tag)
       (consume-tag-prefix)

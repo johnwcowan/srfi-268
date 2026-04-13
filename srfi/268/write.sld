@@ -31,7 +31,8 @@
 	(,srfi-231:f32-storage-class . f32)
 	(,srfi-231:f64-storage-class . f64)
 	(,srfi-231:c64-storage-class . c64)
-	(,srfi-231:c128-storage-class . c128)))
+	(,srfi-231:c128-storage-class . c128)
+	(,srfi-231:generic-storage-class . "")))
 
     (define (write-tag array)
       (display "#a")
@@ -41,8 +42,11 @@
 		   storage-classes) =>
 	      (lambda (p)
 		(display (cdr p))))
-	    ;; Unknown or generic storage class
-	    (else #t)))
+	    (else
+	     (display "Warning: write-array couldn't determine storage \
+		       class."
+		      (current-error-port))
+	     (newline (current-error-port)))))
 
     (define (write-bounds array)
       (let* ((iv (srfi-231:array-domain array))
