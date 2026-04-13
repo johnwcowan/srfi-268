@@ -7,27 +7,27 @@
 	  (scheme case-lambda)
 	  (scheme read)
 	  (scheme write)
-          (only (srfi 1) append-map every)
-          (srfi 231)
+          (prefix (srfi 1) srfi-1:)
+          (prefix (srfi 231) srfi-231:)
           )
   (begin
     (define storage-class-symbols
-      `((char . ,char-storage-class)
-        (s8   . ,s8-storage-class)
-	(s16  . ,s16-storage-class)
-	(s32  . ,s32-storage-class)
-	(s64  . ,s64-storage-class)
-	(u1   . ,u1-storage-class)
-	(u8   . ,u8-storage-class)
-	(u16  . ,u16-storage-class)
-	(u32  . ,u32-storage-class)
-	(u64  . ,u64-storage-class)
-	(f8   . ,f8-storage-class)
-	(f16  . ,f16-storage-class)
-	(f32  . ,f32-storage-class)
-	(f64  . ,f64-storage-class)
-	(c64  . ,c64-storage-class)
-	(c128 . ,c128-storage-class)))
+      `((char . ,srfi-231:char-storage-class)
+        (s8   . ,srfi-231:s8-storage-class)
+	(s16  . ,srfi-231:s16-storage-class)
+	(s32  . ,srfi-231:s32-storage-class)
+	(s64  . ,srfi-231:s64-storage-class)
+	(u1   . ,srfi-231:u1-storage-class)
+	(u8   . ,srfi-231:u8-storage-class)
+	(u16  . ,srfi-231:u16-storage-class)
+	(u32  . ,srfi-231:u32-storage-class)
+	(u64  . ,srfi-231:u64-storage-class)
+	(f8   . ,srfi-231:f8-storage-class)
+	(f16  . ,srfi-231:f16-storage-class)
+	(f32  . ,srfi-231:f32-storage-class)
+	(f64  . ,srfi-231:f64-storage-class)
+	(c64  . ,srfi-231:c64-storage-class)
+	(c128 . ,srfi-231:c128-storage-class)))
 
     (define (check-arg who pred x)
       (unless (pred x)
@@ -56,12 +56,12 @@
     ;; storage class.
     (define (class-symbol->storage-class sym)
       (cond ((assv sym storage-class-symbols) => cdr)
-	    (else generic-storage-class)))
+	    (else srfi-231:generic-storage-class)))
 
     (define (parse-tag)
       (consume-tag-prefix)
       (if (eqv? #\( (peek-char))  ; elided type?
-          generic-storage-class
+          srfi-231:generic-storage-class
           (let ((class-sym (read)))
             (unless (symbol? class-sym)
               (parsing-error "invalid array tag" class-sym))
@@ -104,14 +104,15 @@
     ;; contents and then pass them to list->array (which, unlike
     ;; list*->array, takes an interval).
     (define (build-array interval storage-class contents)
-      (let ((dimension (interval-dimension interval)))
+      (let ((dimension (srfi-231:interval-dimension interval)))
 	(unless (check-nested-list dimension contents)
 	  (parsing-error "contents list is the wrong shape"
 			 interval
 			 contents))
-	(list->array interval
-		     (flatten-nested-list (interval-dimension interval)
-				       	  contents)
+	(srfi-231:list->array interval
+		              (flatten-nested-list
+			       (srfi-231:interval-dimension interval)
+			       contents)
 		     storage-class)))
 
     (define (flatten-nested-list dimension nested-list)
@@ -119,9 +120,10 @@
 	((0) (list nested-list))
 	((1) (list-copy nested-list))
 	(else
-	 (append-map (lambda (l)
-		       (flatten-nested-list (- dimension 1) l))
-		     nested-list))))
+	 (srfi-1:append-map
+	  (lambda (l)
+	    (flatten-nested-list (- dimension 1) l))
+	  nested-list))))
 
     (define (check-nested-list dimension nested-data)
       (if (eqv? dimension 0)
@@ -139,9 +141,10 @@
 				     nested-data))
 			       (first (car sublists)))
 			  (and first
-			       (every (lambda (l)
-					(equal? first l))
-				      (cdr sublists))
+			       (srfi-1:every
+				(lambda (l)
+				  (equal? first l))
+			 	(cdr sublists))
 			       (cons len first)))))))))
 
     (define read-array
@@ -156,7 +159,7 @@
                        ((contents) (read)))
            (unless (list? contents)
              (parsing-error "invalid array contents" contents))
-           (build-array (make-interval lowers uppers)
+           (build-array (srfi-231:make-interval lowers uppers)
                         class
                         contents)))))
 
