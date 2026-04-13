@@ -1,10 +1,12 @@
+;;; The 'flatten' & 'flatten-contents' procedures were based on
+;;; code from chibi-scheme's implementation of SRFI 231.
 (define-library (srfi 268 read)
   (export read-array
           flatten-contents)
   (import (scheme base)
 	  (scheme case-lambda)
 	  (scheme read)
-          (scheme write)
+	  (scheme write)
           (only (srfi 1) append-map)
           (srfi 231)
           )
@@ -65,15 +67,28 @@
               (parsing-error "invalid array tag" class-sym))
             (class-symbol->storage-class class-sym))))
 
+    ;; Split *bounds* into two corresponding vectors of lower
+    ;; and upper bounds.
+    (define (transform-bounds bounds lowers uppers)
+      (if (null? bounds)
+          (values (list->vector lowers)
+                  (list->vector uppers))
+          (let ((b (car bounds)) (rest (cdr bounds)))
+            (check-bounds b)
+            (cond ((integer? b)  ; upper bound only?
+                   (transform-bounds rest
+                                     (cons 0 lowers)
+                                     (cons b uppers)))
+                  ((pair? b)     ; (<lower> <upper>) list
+                   (transform-bounds rest
+                                     (cons (car b) lowers)
+                                     (cons (cadr b) uppers)))))))
+
     (define (parse-bounds)
       (let ((bounds (read)))
 	(unless (list? bounds)
 	  (parsing-error "invalid bounds spec" bounds))
-	(map (lambda (b)
-	       (check-bounds b)
-	       (cond ((integer? b) (vector 0 b))  ; upper bound only
-		     ((list? b) (list->vector b))))
-	     bounds)))
+        (transform-bounds bounds '() '())))
 
     (define (check-bounds b)
       ;; Just check if *b* has the right type and leave the numerical
@@ -100,9 +115,6 @@
           ls))
 
     (define (flatten-contents dimension nested-ls)
-      (display "dimension is ")
-      (display dimension)
-      (newline)
       (let lp ((ls nested-ls) (d dimension))
         (cond
          ((positive? d)
@@ -121,12 +133,12 @@
          (parameterize ((current-input-port port))
            (read-array)))
         (()
-         (let* ((class (parse-tag))
-                (bounds (parse-bounds))
-                (contents (read)))
+         (let*-values (((class) (parse-tag))
+                       ((lowers uppers) (parse-bounds))
+                       ((contents) (read)))
            (unless (list? contents)
              (parsing-error "invalid array contents" contents))
-           (build-array (apply make-interval bounds)
+           (build-array (make-interval lowers uppers)
                         class
                         contents)))))
 
