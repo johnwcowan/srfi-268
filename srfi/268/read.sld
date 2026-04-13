@@ -71,8 +71,8 @@
     ;; and upper bounds.
     (define (transform-bounds bounds lowers uppers)
       (if (null? bounds)
-          (values (list->vector lowers)
-                  (list->vector uppers))
+          (values (list->vector (reverse lowers))
+                  (list->vector (reverse uppers)))
           (let ((b (car bounds)) (rest (cdr bounds)))
             (check-bounds b)
             (cond ((integer? b)  ; upper bound only?
