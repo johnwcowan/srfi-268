@@ -251,6 +251,9 @@ convert it to a string, with a newline between each line.
 Then recursively <code>read</code> each element.
 </p>
 
+<p>An attempt to read a literal with too many or too few elements
+in the <var class="non-terminal">datum</var> has undefined effect.</p>
+
 <h4><code>write-array </code> <var>array</var> [ <var>output-port</var> ]</h4>
 
 <blockquote>Writes the array as an array literal to <var>output-port</var>
