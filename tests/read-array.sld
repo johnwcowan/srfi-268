@@ -28,9 +28,58 @@
 	(test-assert "1d generic array, whitespace variation (2)"
 	  (array=? (list*->array 1 '(1 2 3))
 		   (string->array "#a(3)(1 2 3)")))
+	(test-assert "1d char array"
+	  (array=? (list*->array 1 '(#\a #\b #\c) char-storage-class)
+		   (string->array "#achar(3) (#\\a #\\b #\\c)")))
+	(test-assert "1d s8 array"
+	  (array=? (list*->array 1 '(1 -2 3) s8-storage-class)
+		   (string->array "#as8(3) (1 -2 3)")))
+	(test-assert "1d s16 array"
+	  (array=? (list*->array 1 '(1 -2 3) s16-storage-class)
+		   (string->array "#as16(3) (1 -2 3)")))
+	(test-assert "1d s32 array"
+	  (array=? (list*->array 1 '(1 -2 3) s32-storage-class)
+		   (string->array "#as32(3) (1 -2 3)")))
+	(test-assert "1d s64 array"
+	  (array=? (list*->array 1 '(1 -2 3) s64-storage-class)
+		   (string->array "#as64(3) (1 -2 3)")))
+	(test-assert "1d u1 array"
+	  (array=? (list*->array 1 '(1 0 0) u1-storage-class)
+		   (string->array "#au1(3) (1 0 0)")))
+	(test-assert "1d u8 array"
+	  (array=? (list*->array 1 '(1 2 3) u8-storage-class)
+		   (string->array "#au8(3) (1 2 3)")))
 	(test-assert "1d u16 array"
 	  (array=? (list*->array 1 '(1 2 3) u16-storage-class)
 		   (string->array "#au16(3) (1 2 3)")))
+	(test-assert "1d u32 array"
+	  (array=? (list*->array 1 '(1 2 3) u32-storage-class)
+		   (string->array "#au32(3) (1 2 3)")))
+	(test-assert "1d u64 array"
+	  (array=? (list*->array 1 '(1 2 3) u64-storage-class)
+		   (string->array "#au64(3) (1 2 3)")))
+	(test-assert "1d f8 array"
+	  (array=? (list*->array 1 '(1.0 2.3 3.8) f8-storage-class)
+		   (string->array "#af8(3) (1.0 2.3 3.8)")))
+	(test-assert "1d f16 array"
+	  (array=? (list*->array 1 '(1.0 2.3 3.8) f16-storage-class)
+		   (string->array "#af16(3) (1.0 2.3 3.8)")))
+	(test-assert "1d f32 array"
+	  (array=? (list*->array 1 '(1.0 2.3 3.8) f32-storage-class)
+		   (string->array "#af32(3) (1.0 2.3 3.8)")))
+	(test-assert "1d f64 array"
+	  (array=? (list*->array 1 '(1.0 2.3 3.8) f64-storage-class)
+		   (string->array "#af64(3) (1.0 2.3 3.8)")))
+	(test-assert "1d c64 array"
+	  (array=? (list*->array 1
+				 '(1.0+2.0i 2.3 3.8@0.4)
+				 c64-storage-class)
+		   (string->array "#ac64(3) (1.0+2.0i 2.3 3.8@0.4)")))
+	(test-assert "1d c128 array"
+	  (array=? (list*->array 1
+				 '(1.0+2.0i 2.3 3.8@0.4)
+				 c128-storage-class)
+		   (string->array "#ac128(3) (1.0+2.0i 2.3 3.8@0.4)")))
 	(test-assert "1d u16 array, both bounds given, whitespace var."
 	  (array=? (list*->array 1 '(1 2 3) u16-storage-class)
 		   (string->array "#au16\t((0 3))\t(1 2 3)")))
