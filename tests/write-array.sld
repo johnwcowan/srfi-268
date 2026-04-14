@@ -24,10 +24,54 @@
       (test-group "write-array"
 	(test-assert "1d generic array"
 	  (array-wr-equals? (list*->array 1 '(1 2 3))))
+	(test-assert "1d char array"
+	  (array-wr-equals?
+	   (list*->array 1 '(#\a #\b #\c) char-storage-class)))
+	(test-assert "1d s8 array"
+	  (array-wr-equals?
+	   (list*->array 1 '(1 -2 3) s8-storage-class)))
+	(test-assert "1d s16 array"
+	  (array-wr-equals?
+	   (list*->array 1 '(1 -2 3) s16-storage-class)))
+	(test-assert "1d s32 array"
+	  (array-wr-equals?
+	   (list*->array 1 '(1 -2 3) s32-storage-class)))
+	(test-assert "1d s64 array"
+	  (array-wr-equals?
+	   (list*->array 1 '(1 -2 3) s64-storage-class)))
+	(test-assert "1d u1 array"
+	  (array-wr-equals?
+	   (list*->array 1 '(1 0 0) u1-storage-class)))
 	(test-assert "1d u8 array"
-	  (array-wr-equals? (list*->array 1
-					  '(1 2 3)
-					  u8-storage-class)))
+	  (array-wr-equals?
+	   (list*->array 1 '(1 2 3) u8-storage-class)))
+	(test-assert "1d u16 array"
+	  (array-wr-equals?
+	   (list*->array 1 '(1 2 3) u16-storage-class)))
+	(test-assert "1d u32 array"
+	  (array-wr-equals?
+	   (list*->array 1 '(1 2 3) u32-storage-class)))
+	(test-assert "1d u64 array"
+	  (array-wr-equals?
+	   (list*->array 1 '(1 2 3) u64-storage-class)))
+	(test-assert "1d f8 array"
+	  (array-wr-equals?
+	   (list*->array 1 '(1.0 2.3 3.8) f8-storage-class)))
+	(test-assert "1d f16 array"
+	  (array-wr-equals?
+	   (list*->array 1 '(1.0 2.3 3.8) f16-storage-class)))
+	(test-assert "1d f32 array"
+	  (array-wr-equals?
+	   (list*->array 1 '(1.0 2.3 3.8) f32-storage-class)))
+	(test-assert "1d f64 array"
+	  (array-wr-equals?
+	   (list*->array 1 '(1.0 2.3 3.8) f64-storage-class)))
+	(test-assert "1d c64 array"
+	  (array-wr-equals?
+	   (list*->array 1 '(1.0+2.0i 2.3 3.8@0.4) c64-storage-class)))
+	(test-assert "1d c128 array"
+	  (array-wr-equals?
+	   (list*->array 1 '(1.0+2.0i 2.3 3.8@0.4) c128-storage-class)))
 	(test-assert "2d generic array"
 	  (array-wr-equals? (list*->array 2
 					  '((1 2) (a b)))))
