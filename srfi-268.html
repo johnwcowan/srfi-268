@@ -5,11 +5,11 @@ SPDX-FileCopyrightText: 2026 John Cowan, Per Bothner
 SPDX-License-Identifier: MIT
 -->
   <head>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8">
     <title>SRFI 268: Multidimensional array literals</title>
-    <link href="/favicon.png" rel="icon" sizes="192x192" type="image/png"/>
-    <link rel="stylesheet" href="https://srfi.schemers.org/srfi.css" type="text/css"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link href="/favicon.png" rel="icon" sizes="192x192" type="image/png">
+    <link rel="stylesheet" href="https://srfi.schemers.org/srfi.css" type="text/css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style type="text/css">
   div.title h1, div.author h1 { font-size: small; color: blue }
   div.title { font-size: xx-large; color: blue; font-weight: bold }
@@ -44,6 +44,7 @@ SPDX-License-Identifier: MIT
       <li>60-day deadline: 2026-05-29</li>
       <li>Draft #1 published: 2026-03-30</li>
       <li>Draft #2 published: 2026-04-10</li>
+      <li>Draft #3 published: 2026-04-14</li>
     </ul>
 
 <h2 id="abstract">Abstract</h2>
@@ -88,9 +89,9 @@ and its type-specifier syntax is stylistically
 incompatible with the literals proposed
 for uniform vectors in SRFIs 4 and 160.</p>
 
-<p>Unlike this SRFI, <a href="https://srfi.schemers.org/srfi-163/srfi-163.html">SRFI 163</a> 
-is based on lower bound and length rather than lower buond and
-(exclusive) upper bound, like the rest of Scheme.  it also requires
+<p>Unlike this SRFI, <a href="https://srfi.schemers.org/srfi-163/srfi-163.html">SRFI 163</a>
+is based on lower bound and length rather than lower bound and
+(exclusive) upper bound, like the rest of Scheme.  It also requires
 the tag and bounds to be a single token,
 which is problematic for high-dimensional arrays,
 and uses a special notation for the bounds rather than a list.</p>
@@ -146,7 +147,7 @@ array is followed by a datum of any type that the
 <var>tag</var> supports.</p>
 
 <p>The number of dimensions is inferred
-from the length of <var class="non-terminal">bounds</var>, as    
+from the length of <var class="non-terminal">bounds</var>, as
 it would be impossible from the
 <var class="non-terminal">datum</var> alone to tell if
 <code>(1 2)</code>
@@ -228,7 +229,7 @@ neither:</p>
   (((0 0 0 0) (0 0 -1 0) (0 1 0 0) (0 0 0 0))
    ((0 0 1 0) (0 0 0 0) (-1 0 0 0) (0 0 0 0))
    ((0 -1 0 0) (1 0 0 0) (0 0 0 0) (0 0 0 0))
-   ((0 0 0 0) (0 0 0 0) (0 0 0 0) (0 0 0 0))))  
+   ((0 0 0 0) (0 0 0 0) (0 0 0 0) (0 0 0 0))))
 </pre>
 
 <h3 id="procedures">Procedures</h3>
@@ -342,7 +343,12 @@ could be formatted as:</p>
 
 <h2 id="implementation">Implementation</h2>
 
-<p>(none yet)</p>
+<p>A sample implementation in R<sup>7</sup>RS Scheme (with SRFIs 1 and
+231) can be found in the SRFI repository.  It has been developed for
+Chibi Scheme, but should be portable to any R<sup>7</sup>RS
+implementation.  SRFI 64 is required to run the included test suite.</p>
+
+<p><code>format-array</code> is not yet implemented.</p>
 
 <h2 id="acknowledgements">Acknowledgements</h2>
 
@@ -350,7 +356,7 @@ This specification is based on prior art, primarily SRFI 163,
 Kawa, Guile, and Common Lisp.
 
 <h2 id="copyright">Copyright</h2>
-<p>© Per Bothner 2019, John Cowan 2026.</p>
+<p>&copy; Per Bothner 2019, John Cowan, Wolfgang Corcoran-Mathe 2026.</p>
 
 <p>
   Permission is hereby granted, free of charge, to any person
@@ -376,5 +382,5 @@ Kawa, Guile, and Common Lisp.
   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.</p>
 
-  <hr/>
+  <hr>
   <address>Editor: <a href="mailto:srfi-editors+at+srfi+dot+schemers+dot+org">Arthur A. Gleckler</a></address></body></html>

@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 * SRFI 268: Multidimensional Array Literals
 
-** by Per Bothner (SRFI 163), Peter McGoron (design), and John Cowan (editor and steward)
+** by Per Bothner (SRFI 163), Peter McGoron (design), John Cowan (editor and steward), and Wolfgang Corcoran-Mathe (implementation)
 
 
 
