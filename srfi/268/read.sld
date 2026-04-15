@@ -10,13 +10,13 @@
 	  (scheme char)
 	  (scheme read)
 	  (scheme write)
-          (prefix (srfi 1) srfi-1:)
-          (prefix (srfi 231) srfi-231:)
-          )
+	  (prefix (srfi 1) srfi-1:)
+	  (prefix (srfi 231) srfi-231:)
+	  )
   (begin
     (define storage-class-symbols
       `((char . ,srfi-231:char-storage-class)
-        (s8   . ,srfi-231:s8-storage-class)
+	(s8   . ,srfi-231:s8-storage-class)
 	(s16  . ,srfi-231:s16-storage-class)
 	(s32  . ,srfi-231:s32-storage-class)
 	(s64  . ,srfi-231:s64-storage-class)
@@ -77,7 +77,7 @@
 			       (srfi-1:every
 				(lambda (l)
 				  (equal? first l))
-			 	(cdr sublists))
+				(cdr sublists))
 			       (cons len first)))))))))
 
     ;;; Parser
@@ -103,11 +103,11 @@
     (define (parse-tag)
       (consume-tag-prefix)
       (if (char-alphabetic? (peek-char))  ; type present?
-          (let ((class-sym (read)))
-            (unless (symbol? class-sym)
-              (parsing-error "invalid array tag" class-sym))
-            (class-symbol->storage-class class-sym))
-          srfi-231:generic-storage-class))  ; type elided
+	  (let ((class-sym (read)))
+	    (unless (symbol? class-sym)
+	      (parsing-error "invalid array tag" class-sym))
+	    (class-symbol->storage-class class-sym))
+	  srfi-231:generic-storage-class))  ; type elided
 
     ;; Split *bounds* into two corresponding vectors of lower
     ;; and upper bounds.
@@ -120,19 +120,19 @@
 				(list 0 b)
 				b))
 			  bounds))))
-	 (values (list->vector lowers) (list->vector uppers))))
+	(values (list->vector lowers) (list->vector uppers))))
 
     (define (parse-bounds)
       (let ((bounds (read)))
 	(unless (list? bounds)
 	  (parsing-error "invalid bounds spec" bounds))
-        (transform-bounds bounds)))
+	(transform-bounds bounds)))
 
     ;; Just check if *b* has the right type and leave the numerical
     ;; checks to 'make-interval'.
     (define (check-bounds b)
       (unless (or (integer? b)
-	          (and (list? b) (= 2 (length b))))
+		  (and (list? b) (= 2 (length b))))
 	(parsing-error "invalid bounds spec element" b)))
 
     ;; Returns a new array built from the given components.  We
@@ -145,22 +145,22 @@
 			 interval
 			 contents))
 	(srfi-231:list->array interval
-		              (flatten-nested-list
-			       (srfi-231:interval-dimension interval)
-			       contents)
-			      storage-class)))
+			     (flatten-nested-list
+			      (srfi-231:interval-dimension interval)
+			      contents)
+			     storage-class)))
 
     (define read-array
       (case-lambda
 	((port)
-         (check-arg "read-array" input-port? port)
-         (parameterize ((current-input-port port))
-           (read-array)))
-        (()
-         (let*-values (((class) (parse-tag))
-                       ((lowers uppers) (parse-bounds))
-                       ((contents) (read)))
-           (build-array (srfi-231:make-interval lowers uppers)
-                        class
-                        contents)))))
-  ))
+	 (check-arg "read-array" input-port? port)
+	 (parameterize ((current-input-port port))
+	   (read-array)))
+	(()
+	 (let*-values (((class) (parse-tag))
+		       ((lowers uppers) (parse-bounds))
+		       ((contents) (read)))
+	   (build-array (srfi-231:make-interval lowers uppers)
+			class
+			contents)))))
+    ))

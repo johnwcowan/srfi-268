@@ -38,8 +38,8 @@
       ;; class.  This is far from foolproof.
       (cond ((assv (srfi-231:array-storage-class array)
 		   storage-classes) =>
-	      (lambda (p)
-		(display (cdr p))))
+		   (lambda (p)
+		     (display (cdr p))))
 	    (else
 	     (display "Warning: write-array couldn't determine storage \
 		       class."
@@ -81,4 +81,4 @@
 	 (write-bounds array)
 	 (display " ")
 	 (write-contents array))))
-  ))
+    ))
