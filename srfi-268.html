@@ -5,11 +5,11 @@ SPDX-FileCopyrightText: 2026 John Cowan, Per Bothner
 SPDX-License-Identifier: MIT
 -->
   <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8"/>
     <title>SRFI 268: Multidimensional array literals</title>
-    <link href="/favicon.png" rel="icon" sizes="192x192" type="image/png">
-    <link rel="stylesheet" href="https://srfi.schemers.org/srfi.css" type="text/css">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/favicon.png" rel="icon" sizes="192x192" type="image/png"/>
+    <link rel="stylesheet" href="https://srfi.schemers.org/srfi.css" type="text/css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <style type="text/css">
   div.title h1, div.author h1 { font-size: small; color: blue }
   div.title { font-size: xx-large; color: blue; font-weight: bold }
@@ -137,8 +137,9 @@ giving the upper bound of a dimension
 (in which case the lower bound is 0), or a list of two
 integer literals giving the lower and upper bounds.
 This is followed by a <var class="non-terminal">datum</var>
-containing array elements organized into dimensions using parentheses.
-The <var class="non-terminal">datum</var>
+containing array elements organized into dimensions using parentheses.</p>
+
+<p>The <var class="non-terminal">datum</var>
 contains the elements in a nested-list format:
 a one-dimensional array uses a single list,
 a two-dimensional array uses a list of lists, and so on.
@@ -146,13 +147,26 @@ The elements are in lexicographic order. A zero-dimensional
 array is followed by a datum of any type that the
 <var>tag</var> supports.</p>
 
+<p>In an array with a signed or unsigned integer type, the values in
+the <var class="non-terminal">datum</var> must be integer literals;
+in an array with an inexact real type, the values
+must be inexact literals,
+and in an array with complex type, the values
+must be complex literals.  So, for example, the following are all invalid:
+</p>
+<ul>
+<li><code>#ac64(2 2) ((1 2) (3/3 4))</code></li>
+<li><code>#as32(2 2) ((6/3 4/2) (-1/1 0)))</code>
+<li><code>#af32(2 2) ((1 2) (3 4))</code>
+</ul>
+
 <p>The number of dimensions is inferred
 from the length of <var class="non-terminal">bounds</var>, as
 it would be impossible from the
 <var class="non-terminal">datum</var> alone to tell if
-<code>(1 2)</code>
-represents a one-dimensional array with integer elements,
-or a zero-dimensional array whose sole element is a list.</p>
+<code>((1 2) (3 4))</code>
+represents a two-dimensional array with integer elements,
+or a one-dimensional array whose elements are lists.</p>
 
 <p>Whitespace is permitted before either the lower bounds or
 the list of array elements or both,
@@ -356,7 +370,7 @@ This specification is based on prior art, primarily SRFI 163,
 Kawa, Guile, and Common Lisp.
 
 <h2 id="copyright">Copyright</h2>
-<p>&copy; Per Bothner 2019, John Cowan, Wolfgang Corcoran-Mathe 2026.</p>
+<p>© Per Bothner 2019, John Cowan, Wolfgang Corcoran-Mathe 2026.</p>
 
 <p>
   Permission is hereby granted, free of charge, to any person
@@ -382,5 +396,5 @@ Kawa, Guile, and Common Lisp.
   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.</p>
 
-  <hr>
+  <hr/>
   <address>Editor: <a href="mailto:srfi-editors+at+srfi+dot+schemers+dot+org">Arthur A. Gleckler</a></address></body></html>
